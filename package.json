@@ -1,0 +1,26 @@
+{
+  "name": "wysknd-test",
+  "version": "0.0.1",
+  "description": "Utilities that provide functionality that can be used to test othe modules.",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jasmine-node test/spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vamship/wysknd-test.git"
+  },
+  "keywords": [
+    "test",
+    "utils"
+  ],
+  "author": "Vamshi K Ponnapalli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vamship/wysknd-test/issues"
+  },
+  "homepage": "https://github.com/vamship/wysknd-test"
+}
