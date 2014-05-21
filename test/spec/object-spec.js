@@ -5,7 +5,7 @@ var _object = require('../../lib/index').object;
 describe('object: ', function() {
 
     it('should expose methods required by the interface', function() {
-       expect(typeof _object.verifyInterface).toBe('function'); 
+        expect(typeof _object.verifyInterface).toBe('function');
     });
 
     describe('object.verifyInterface(): ', function() {
@@ -13,17 +13,29 @@ describe('object: ', function() {
         it('should throw an error if the target arg is invalid', function() {
             var error = 'target object not specified, or is not valid (arg #1)';
 
-           expect(function() {_object.verifyInterface(); }).toThrow(error); 
-           expect(function() {_object.verifyInterface('bad arg'); }).toThrow(error); 
-           expect(function() {_object.verifyInterface([]); }).toThrow(error); 
+            expect(function() {
+                _object.verifyInterface();
+            }).toThrow(error);
+            expect(function() {
+                _object.verifyInterface('bad arg');
+            }).toThrow(error);
+            expect(function() {
+                _object.verifyInterface([]);
+            }).toThrow(error);
         });
 
         it('should throw an error if the interface arg is invalid', function() {
             var error = 'expected interface not specified, or is not valid (arg #2)';
 
-           expect(function() {_object.verifyInterface({}); }).toThrow(error); 
-           expect(function() {_object.verifyInterface({}, 'bad arg'); }).toThrow(error); 
-           expect(function() {_object.verifyInterface({}, []); }).toThrow(error); 
+            expect(function() {
+                _object.verifyInterface({});
+            }).toThrow(error);
+            expect(function() {
+                _object.verifyInterface({}, 'bad arg');
+            }).toThrow(error);
+            expect(function() {
+                _object.verifyInterface({}, []);
+            }).toThrow(error);
         });
 
         it('should throw no errors if both target and expected interface are empty objects', function() {
@@ -84,7 +96,7 @@ describe('object: ', function() {
         it('should identify additional members in the target that are not in the expected interface as errors by default', function() {
             var target = {
                 foo: 1,
-                bar: function(){}
+                bar: function() {}
             };
             var expectedInterface = {
                 foo: 'number'
@@ -100,7 +112,7 @@ describe('object: ', function() {
         it('should ignore additional members in the target that are not in the expected interface when explicitly requested to do so', function() {
             var target = {
                 foo: 1,
-                bar: function(){}
+                bar: function() {}
             };
             var expectedInterface = {
                 foo: 'number'
@@ -115,7 +127,7 @@ describe('object: ', function() {
         it('should ignore members in the target that are marked "ignore" in the expected interface', function() {
             var target = {
                 foo: 1,
-                bar: function(){}
+                bar: function() {}
             };
             var expectedInterface = {
                 foo: 'number',
