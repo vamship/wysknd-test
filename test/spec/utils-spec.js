@@ -1,3 +1,5 @@
+'use strict';
+
 var _utils = require('../../lib/index').utils;
 
 describe('utils: ', function() {

@@ -1,3 +1,5 @@
+'use strict';
+
 var _object = require('../../lib/index').object;
 
 describe('object: ', function() {

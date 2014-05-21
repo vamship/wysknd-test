@@ -1,4 +1,5 @@
 'use strict';
+
 var _fs = require('fs');
 var _filesystem = require('../../lib/index').fs;
 
