@@ -1,32 +1,40 @@
+/* jshint node:true, expr:true */
 'use strict';
 
 var _fs = require('fs');
+var _chai = require('chai');
+_chai.use(require('sinon-chai'));
+_chai.use(require('chai-as-promised'));
+
+var expect = _chai.expect;
 var _filesystem = require('../../lib/index').fs;
 
-describe('filesystem: ', function() {
+describe('filesystem', function() {
     beforeEach(function() {
         _fs.mkdirSync('.tmp');
     });
     afterEach(function() {
         try {
             _fs.rmdirSync('.tmp');
-        } catch (ex) {};
+        } catch (ex) {
+            // Eat the exception
+        }
     });
 
     it('should expose methods required by the interface', function() {
-        expect(typeof _filesystem.createFolders).toBe('function');
-        expect(typeof _filesystem.createFiles).toBe('function');
-        expect(typeof _filesystem.cleanupFolders).toBe('function');
-        expect(typeof _filesystem.cleanupFiles).toBe('function');
+        expect(_filesystem).to.have.property('createFolders').and.to.be.a('function');
+        expect(_filesystem).to.have.property('createFiles').and.to.be.a('function');
+        expect(_filesystem).to.have.property('cleanupFolders').and.to.be.a('function');
+        expect(_filesystem).to.have.property('cleanupFiles').and.to.be.a('function');
     });
 
-    describe('filesystem.createFolders(): ', function() {
+    describe('createFolders(): ', function() {
         it('should throw an error if no input arguments are passed', function() {
             var error = 'no folders specified to create';
 
             expect(function() {
                 _filesystem.createFolders();
-            }).toThrow(error);
+            }).to.throw(error);
         });
 
         it('should create a folders when arguments are specified individually', function() {
@@ -34,13 +42,13 @@ describe('filesystem: ', function() {
             var folder2 = '.tmp/bar';
 
             try {
-                expect(_fs.existsSync(folder1)).toBe(false);
-                expect(_fs.existsSync(folder2)).toBe(false);
+                expect(_fs.existsSync(folder1)).to.be.false;
+                expect(_fs.existsSync(folder2)).to.be.false;
 
                 _filesystem.createFolders(folder1, folder2);
 
-                expect(_fs.existsSync(folder1)).toBe(true);
-                expect(_fs.existsSync(folder2)).toBe(true);
+                expect(_fs.existsSync(folder1)).to.be.true;
+                expect(_fs.existsSync(folder2)).to.be.true;
 
             } finally {
                 //Cleanup
@@ -54,13 +62,13 @@ describe('filesystem: ', function() {
             var folder2 = '.tmp/bar';
 
             try {
-                expect(_fs.existsSync(folder1)).toBe(false);
-                expect(_fs.existsSync(folder2)).toBe(false);
+                expect(_fs.existsSync(folder1)).to.be.false;
+                expect(_fs.existsSync(folder2)).to.be.false;
 
                 _filesystem.createFolders([folder1, folder2]);
 
-                expect(_fs.existsSync(folder1)).toBe(true);
-                expect(_fs.existsSync(folder2)).toBe(true);
+                expect(_fs.existsSync(folder1)).to.be.true;
+                expect(_fs.existsSync(folder2)).to.be.true;
 
             } finally {
                 //Cleanup
@@ -78,11 +86,11 @@ describe('filesystem: ', function() {
 
                 expect(function() {
                     _filesystem.createFolders(folder1);
-                }).not.toThrow();
+                }).not.to.throw();
 
                 expect(function() {
                     _filesystem.createFolders(folder2);
-                }).not.toThrow();
+                }).not.to.throw();
 
             } finally {
                 //Cleanup
@@ -91,13 +99,13 @@ describe('filesystem: ', function() {
         });
     });
 
-    describe('filesystem.cleanupFolders(): ', function() {
+    describe('cleanupFolders(): ', function() {
         it('should throw an error if no input arguments are passed', function() {
             var error = 'no folders specified to clean up';
 
             expect(function() {
                 _filesystem.cleanupFolders();
-            }).toThrow(error);
+            }).to.throw(error);
         });
 
         it('should cleanup folders when arguments are specified individually', function() {
@@ -108,13 +116,13 @@ describe('filesystem: ', function() {
                 _fs.mkdirSync(folder1);
                 _fs.mkdirSync(folder2);
 
-                expect(_fs.existsSync(folder1)).toBe(true);
-                expect(_fs.existsSync(folder2)).toBe(true);
+                expect(_fs.existsSync(folder1)).to.be.true;
+                expect(_fs.existsSync(folder2)).to.be.true;
 
                 _filesystem.cleanupFolders(folder1, folder2);
 
-                expect(_fs.existsSync(folder1)).toBe(false);
-                expect(_fs.existsSync(folder2)).toBe(false);
+                expect(_fs.existsSync(folder1)).to.be.false;
+                expect(_fs.existsSync(folder2)).to.be.false;
 
             } finally {
                 //Cleanup
@@ -135,13 +143,13 @@ describe('filesystem: ', function() {
                 _fs.mkdirSync(folder1);
                 _fs.mkdirSync(folder2);
 
-                expect(_fs.existsSync(folder1)).toBe(true);
-                expect(_fs.existsSync(folder2)).toBe(true);
+                expect(_fs.existsSync(folder1)).to.be.true;
+                expect(_fs.existsSync(folder2)).to.be.true;
 
                 _filesystem.cleanupFolders([folder1, folder2]);
 
-                expect(_fs.existsSync(folder1)).toBe(false);
-                expect(_fs.existsSync(folder2)).toBe(false);
+                expect(_fs.existsSync(folder1)).to.be.false;
+                expect(_fs.existsSync(folder2)).to.be.false;
 
             } finally {
                 //Cleanup
@@ -160,21 +168,21 @@ describe('filesystem: ', function() {
 
             expect(function() {
                 _filesystem.cleanupFolders(folder1);
-            }).not.toThrow();
+            }).not.to.throw();
 
             expect(function() {
                 _filesystem.cleanupFolders(folder2);
-            }).not.toThrow();
+            }).not.to.throw();
         });
     });
 
-    describe('filesystem.createFiles(): ', function() {
+    describe('createFiles(): ', function() {
         it('should throw an error if no input arguments are passed', function() {
             var error = 'no files specified to create';
 
             expect(function() {
                 _filesystem.createFiles();
-            }).toThrow(error);
+            }).to.throw(error);
         });
 
         it('should throw an error if input arguments are not in the correct format', function() {
@@ -182,10 +190,10 @@ describe('filesystem: ', function() {
 
             expect(function() {
                 _filesystem.createFiles('');
-            }).toThrow(error);
+            }).to.throw(error);
             expect(function() {
                 _filesystem.createFiles({});
-            }).toThrow(error);
+            }).to.throw(error);
         });
 
         it('should create files when arguments are specified as individual strings', function() {
@@ -193,13 +201,13 @@ describe('filesystem: ', function() {
             var file2 = '.tmp/bar.tmp';
 
             try {
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
                 _filesystem.createFiles(file1, file2);
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
 
             } finally {
                 //Cleanup
@@ -219,15 +227,15 @@ describe('filesystem: ', function() {
             var file2Contents = '';
 
             try {
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
                 _filesystem.createFiles([file1, file2]);
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
-                expect(_fs.readFileSync(file1).toString()).toBe(file1Contents);
-                expect(_fs.readFileSync(file2).toString()).toBe(file2Contents);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
+                expect(_fs.readFileSync(file1).toString()).to.equal(file1Contents);
+                expect(_fs.readFileSync(file2).toString()).to.equal(file2Contents);
 
             } finally {
                 //Cleanup
@@ -255,15 +263,15 @@ describe('filesystem: ', function() {
             };
 
             try {
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
                 _filesystem.createFiles(file1Obj, file2Obj);
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
-                expect(_fs.readFileSync(file1).toString()).toBe(file1Contents);
-                expect(_fs.readFileSync(file2).toString()).toBe(file2Contents);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
+                expect(_fs.readFileSync(file1).toString()).to.equal(file1Contents);
+                expect(_fs.readFileSync(file2).toString()).to.equal(file2Contents);
 
             } finally {
                 //Cleanup
@@ -291,15 +299,15 @@ describe('filesystem: ', function() {
             };
 
             try {
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
                 _filesystem.createFiles([file1Obj, file2Obj]);
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
-                expect(_fs.readFileSync(file1).toString()).toBe(file1Contents);
-                expect(_fs.readFileSync(file2).toString()).toBe(file2Contents);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
+                expect(_fs.readFileSync(file1).toString()).to.equal(file1Contents);
+                expect(_fs.readFileSync(file2).toString()).to.equal(file2Contents);
 
             } finally {
                 //Cleanup
@@ -327,17 +335,17 @@ describe('filesystem: ', function() {
             };
 
             try {
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
                 _filesystem.createFiles([file1Obj, file2Obj]);
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
 
                 var stats = _fs.lstatSync(file1);
-                expect(stats.isSymbolicLink()).toBe(true);
-                expect(_fs.readFileSync(file2).toString()).toBe(file2Contents);
+                expect(stats.isSymbolicLink()).to.be.true;
+                expect(_fs.readFileSync(file2).toString()).to.equal(file2Contents);
 
             } finally {
                 //Cleanup
@@ -351,13 +359,13 @@ describe('filesystem: ', function() {
         });
     });
 
-    describe('filesystem.cleanupFiles(): ', function() {
+    describe('cleanupFiles(): ', function() {
         it('should throw an error if no input arguments are passed', function() {
             var error = 'no files specified to clean up';
 
             expect(function() {
                 _filesystem.cleanupFiles();
-            }).toThrow(error);
+            }).to.throw(error);
         });
 
         it('should cleanup files when arguments are specified as individual strings', function() {
@@ -368,13 +376,13 @@ describe('filesystem: ', function() {
                 _fs.writeFileSync(file1, '');
                 _fs.writeFileSync(file2, '');
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
 
                 _filesystem.cleanupFiles(file1, file2);
 
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
             } finally {
                 //Cleanup
@@ -395,13 +403,13 @@ describe('filesystem: ', function() {
                 _fs.writeFileSync(file1);
                 _fs.writeFileSync(file2);
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
 
                 _filesystem.cleanupFiles([file1, file2]);
 
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
             } finally {
                 //Cleanup
@@ -428,13 +436,13 @@ describe('filesystem: ', function() {
                 _fs.writeFileSync(file1, '');
                 _fs.writeFileSync(file2, '');
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
 
                 _filesystem.cleanupFiles(file1Obj, file2Obj);
 
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
             } finally {
                 //Cleanup
@@ -461,13 +469,13 @@ describe('filesystem: ', function() {
                 _fs.writeFileSync(file1, '');
                 _fs.writeFileSync(file2, '');
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
 
                 _filesystem.cleanupFiles([file1Obj, file2Obj]);
 
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
             } finally {
                 //Cleanup
@@ -488,15 +496,15 @@ describe('filesystem: ', function() {
                 _fs.writeFileSync(file1, '');
                 _fs.symlinkSync('..', file2);
 
-                expect(_fs.existsSync(file1)).toBe(true);
-                expect(_fs.existsSync(file2)).toBe(true);
+                expect(_fs.existsSync(file1)).to.be.true;
+                expect(_fs.existsSync(file2)).to.be.true;
                 var stats = _fs.lstatSync(file2);
-                expect(stats.isSymbolicLink()).toBe(true);
+                expect(stats.isSymbolicLink()).to.be.true;
 
                 _filesystem.cleanupFiles(file1, file2);
 
-                expect(_fs.existsSync(file1)).toBe(false);
-                expect(_fs.existsSync(file2)).toBe(false);
+                expect(_fs.existsSync(file1)).to.be.false;
+                expect(_fs.existsSync(file2)).to.be.false;
 
             } finally {
                 //Cleanup
@@ -515,11 +523,11 @@ describe('filesystem: ', function() {
 
             expect(function() {
                 _filesystem.cleanupFiles(file1);
-            }).not.toThrow();
+            }).not.to.throw();
 
             expect(function() {
                 _filesystem.cleanupFiles(file2);
-            }).not.toThrow();
+            }).not.to.throw();
         });
     });
 

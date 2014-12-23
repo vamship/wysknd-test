@@ -1,17 +1,23 @@
+/* jshint node:true, expr:true */
 'use strict';
 
+var _chai = require('chai');
+_chai.use(require('sinon-chai'));
+_chai.use(require('chai-as-promised'));
+
+var expect = _chai.expect;
 var _utils = require('../../lib/index').utils;
 
 describe('utils: ', function() {
     it('should expose methods required by the interface', function() {
-        expect(typeof _utils.getArgArray).toBe('function');
+        expect(_utils).to.have.property('getArgArray').and.to.be.a('function');
     });
 
     describe('utils.getArgArray(): ', function() {
         it('should return an empty array if no args are passed', function() {
             var ret = _utils.getArgArray();
 
-            expect(ret).toEqual([]);
+            expect(ret).to.deep.equal([]);
         });
 
         it('should return an array of arguments (regular array)', function() {
@@ -20,7 +26,7 @@ describe('utils: ', function() {
             }];
 
             var ret = _utils.getArgArray(args);
-            expect(ret).toEqual(args);
+            expect(ret).to.deep.equal(args);
         });
 
         it('should return an array of arguments, (arguments array)', function() {
@@ -35,7 +41,7 @@ describe('utils: ', function() {
             var ret = tester('a', 1, {
                 foo: 'bar'
             });
-            expect(ret).toEqual(args);
+            expect(ret).to.deep.equal(args);
         });
 
         it('should return the first parameter, if it is an array (regular array)', function() {
@@ -45,7 +51,7 @@ describe('utils: ', function() {
             }];
 
             var ret = _utils.getArgArray(args);
-            expect(ret).toEqual(first);
+            expect(ret).to.equal(first);
         });
 
         it('should return the first parameter, if it is an array (arguments array)', function() {
@@ -61,7 +67,7 @@ describe('utils: ', function() {
             var ret = tester(first, 'a', 1, {
                 foo: 'bar'
             });
-            expect(ret).toEqual(first);
+            expect(ret).to.equal(first);
         });
     });
 
