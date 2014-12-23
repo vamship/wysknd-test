@@ -1,12 +1,12 @@
 /* jshint node:true, expr:true */
 'use strict';
 
-var _object = require('../../lib/index').object;
 var _chai = require('chai');
 _chai.use(require('sinon-chai'));
 _chai.use(require('chai-as-promised'));
 
 var expect = _chai.expect;
+var _object = require('../../lib/object');
 
 describe('object', function() {
 

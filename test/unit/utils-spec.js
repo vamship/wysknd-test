@@ -6,7 +6,7 @@ _chai.use(require('sinon-chai'));
 _chai.use(require('chai-as-promised'));
 
 var expect = _chai.expect;
-var _utils = require('../../lib/index').utils;
+var _utils = require('../../lib/utils');
 
 describe('utils', function() {
     it('should expose methods required by the interface', function() {
