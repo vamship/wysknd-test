@@ -20,7 +20,7 @@ describe('utils', function() {
             expect(ret).to.deep.equal([]);
         });
 
-        it('should return an array of arguments (regular array)', function() {
+        it('should return an array of arguments when given a regular array', function() {
             var args = ['a', 1, {
                 foo: 'bar'
             }];
@@ -29,7 +29,7 @@ describe('utils', function() {
             expect(ret).to.deep.equal(args);
         });
 
-        it('should return an array of arguments, (arguments array)', function() {
+        it('should return an array of arguments when given an arguments array', function() {
             var args = ['a', 1, {
                 foo: 'bar'
             }];
@@ -44,7 +44,7 @@ describe('utils', function() {
             expect(ret).to.deep.equal(args);
         });
 
-        it('should return the first parameter, if it is an array (regular array)', function() {
+        it('should return the first parameter if the first arg is an array (regular array)', function() {
             var first = ['1', '2', 3];
             var args = [first, 'a', 1, {
                 foo: 'bar'
@@ -54,7 +54,7 @@ describe('utils', function() {
             expect(ret).to.equal(first);
         });
 
-        it('should return the first parameter, if it is an array (arguments array)', function() {
+        it('should return the first parameter if the first arg is an array (arguments array)', function() {
             var first = ['1', '2', 3];
             var args = [first, 'a', 1, {
                 foo: 'bar'
@@ -70,5 +70,4 @@ describe('utils', function() {
             expect(ret).to.equal(first);
         });
     });
-
 });
