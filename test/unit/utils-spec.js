@@ -8,12 +8,12 @@ _chai.use(require('chai-as-promised'));
 var expect = _chai.expect;
 var _utils = require('../../lib/index').utils;
 
-describe('utils: ', function() {
+describe('utils', function() {
     it('should expose methods required by the interface', function() {
         expect(_utils).to.have.property('getArgArray').and.to.be.a('function');
     });
 
-    describe('utils.getArgArray(): ', function() {
+    describe('getArgArray()', function() {
         it('should return an empty array if no args are passed', function() {
             var ret = _utils.getArgArray();
 
