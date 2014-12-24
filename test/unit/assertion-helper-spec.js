@@ -1,0 +1,265 @@
+/* jshint node:true, expr:true */
+'use strict';
+
+var _sinon = require('sinon');
+var _chai = require('chai');
+var _q = require('q');
+_chai.use(require('sinon-chai'));
+_chai.use(require('chai-as-promised'));
+
+var expect = _chai.expect;
+var _assertionHelper = require('../../lib/assertion-helper');
+
+describe('object', function() {
+
+    var EMPTY_FUNC = function() {
+    };
+
+    it('should expose methods required by the interface', function() {
+        expect(_assertionHelper).to.have.property('getNotifySuccessHandler').and.to.be.a('function');
+        expect(_assertionHelper).to.have.property('getNotifyFailureHandler').and.to.be.a('function');
+        expect(_assertionHelper).to.have.property('runDeferred').and.to.be.a('function');
+        expect(_assertionHelper).to.have.property('getDelayedRunner').and.to.be.a('function');
+        expect(_assertionHelper).to.have.property('getNotifyFailureHandler').and.to.be.a('function');
+    });
+
+    describe('getNotifySuccessHandler()', function() {
+        it('should throw an error if invoked with an invalid done callback', function() {
+            var error = 'invalid done callback method specified (arg #1)';
+            
+            function createHandler(done) {
+                return function() {
+                    return _assertionHelper.getNotifySuccessHandler(done);
+                }
+            }
+
+            expect(createHandler()).to.throw(error);
+            expect(createHandler(null)).to.throw(error);
+            expect(createHandler('')).to.throw(error);
+            expect(createHandler('foo')).to.throw(error);
+            expect(createHandler(123)).to.throw(error);
+            expect(createHandler(true)).to.throw(error);
+            expect(createHandler({})).to.throw(error);
+            expect(createHandler([])).to.throw(error);
+        });
+
+        it('should return a function when invoked', function() {
+            var callback = _assertionHelper.getNotifySuccessHandler(EMPTY_FUNC);
+
+            expect(callback).to.be.a('function');
+        });
+
+        it('should invoke the callback with no parameters when the return function is invoked', function() {
+            var spy = _sinon.spy();
+
+            var callback = _assertionHelper.getNotifySuccessHandler(spy);
+
+            expect(spy).not.to.have.been.called;
+            callback();
+            expect(spy).to.have.been.calledOnce.calledWithExactly();
+        });
+    });
+
+    describe('getNotifyFailureHandler()', function() {
+        it('should throw an error if invoked with an invalid done callback', function() {
+            var error = 'invalid done callback method specified (arg #1)';
+            
+            function createHandler(done) {
+                return function() {
+                    return _assertionHelper.getNotifyFailureHandler(done);
+                }
+            }
+
+            expect(createHandler()).to.throw(error);
+            expect(createHandler(null)).to.throw(error);
+            expect(createHandler('')).to.throw(error);
+            expect(createHandler('foo')).to.throw(error);
+            expect(createHandler(123)).to.throw(error);
+            expect(createHandler(true)).to.throw(error);
+            expect(createHandler({})).to.throw(error);
+            expect(createHandler([])).to.throw(error);
+        });
+
+        it('should return a function when invoked', function() {
+            var callback = _assertionHelper.getNotifyFailureHandler(EMPTY_FUNC);
+
+            expect(callback).to.be.a('function');
+        });
+
+        it('should invoke the callback with the error object when the return function is invoked', function() {
+            var errorMessage = 'something went wrong';
+            var spy = _sinon.spy();
+
+            var callback = _assertionHelper.getNotifyFailureHandler(spy);
+
+            expect(spy).not.to.have.been.called;
+            callback(errorMessage);
+            expect(spy).to.have.been.calledOnce.calledWithExactly(errorMessage);
+        });
+    });
+
+    describe('runDeferred()', function() {
+        it('should throw an error if invoked with an invalid expectation wrapper', function() {
+            var error = 'invalid expectation wrapper specified (arg #1)';
+            
+            function runDeferred(expectations) {
+                return function() {
+                    return _assertionHelper.runDeferred(expectations);
+                }
+            }
+
+            expect(runDeferred()).to.throw(error);
+            expect(runDeferred(null)).to.throw(error);
+            expect(runDeferred('')).to.throw(error);
+            expect(runDeferred('foo')).to.throw(error);
+            expect(runDeferred(123)).to.throw(error);
+            expect(runDeferred(true)).to.throw(error);
+            expect(runDeferred({})).to.throw(error);
+            expect(runDeferred([])).to.throw(error);
+        });
+
+        it('should create a new deferred object if one has not been provided', function() {
+            var ret = _assertionHelper.runDeferred(EMPTY_FUNC);
+
+            expect(ret).to.be.an('object');
+            expect(ret).to.have.property('promise').and.to.be.an('object');
+            expect(ret).to.have.property('resolve').and.to.be.a('function');
+            expect(ret).to.have.property('reject').and.to.be.a('function');
+        });
+
+        it('should reuse an existing deferred object if one is passed in', function() {
+            var def = _q.defer();
+            var ret = _assertionHelper.runDeferred(EMPTY_FUNC, def);
+
+            expect(ret).to.equal(def);
+        });
+
+        it('should reject the promise if the expectations throw an error', function(done) {
+            var error = 'something went wrong';
+            var ret = _assertionHelper.runDeferred(function() { throw new Error(error); });
+
+            expect(ret.promise).to.be.rejectedWith(error).notify(done);
+        });
+        
+        it('should resolve the promise if the expectations execute successfully', function(done) {
+            var ret = _assertionHelper.runDeferred(EMPTY_FUNC);
+            expect(ret.promise).to.be.fulfilled.notify(done);
+        });
+        
+        it('should reject the promise if the expectations return a promise that is rejected', function(done) {
+            var error = 'something went wrong';
+            var ret = _assertionHelper.runDeferred(function() {
+                var def = _q.defer();
+                def.reject(new Error(error));
+                return def.promise;
+            });
+            expect(ret.promise).to.be.rejectedWith(error).notify(done);
+        });
+
+        it('should resolve the promise if the expectations return a promise that is resolved', function(done) {
+            var ret = _assertionHelper.runDeferred(function() {
+                var def = _q.defer();
+                def.resolve();
+                return def.promise;
+            });
+            expect(ret.promise).to.be.fulfilled.notify(done);
+        });
+    });
+
+    describe('getDelayedRunner()', function() {
+        it('should throw an error if invoked with an invalid task wrapper', function() {
+            var error = 'invalid task wrapper specified (arg #1)';
+            
+            function getDelayedRunner(task) {
+                return function() {
+                    return _assertionHelper.getDelayedRunner(task);
+                }
+            }
+
+            expect(getDelayedRunner()).to.throw(error);
+            expect(getDelayedRunner(null)).to.throw(error);
+            expect(getDelayedRunner('')).to.throw(error);
+            expect(getDelayedRunner('foo')).to.throw(error);
+            expect(getDelayedRunner(123)).to.throw(error);
+            expect(getDelayedRunner(true)).to.throw(error);
+            expect(getDelayedRunner({})).to.throw(error);
+            expect(getDelayedRunner([])).to.throw(error);
+        });
+
+        it('should throw an error if invoked with an invalid delay', function() {
+            var error = 'invalid delay specified - should be a non negative number (arg #2)';
+            
+            function getDelayedRunner(delay) {
+                return function() {
+                    return _assertionHelper.getDelayedRunner(EMPTY_FUNC, delay);
+                }
+            }
+
+            expect(getDelayedRunner()).to.throw(error);
+            expect(getDelayedRunner(null)).to.throw(error);
+            expect(getDelayedRunner('')).to.throw(error);
+            expect(getDelayedRunner('foo')).to.throw(error);
+            expect(getDelayedRunner(-123)).to.throw(error);
+            expect(getDelayedRunner(true)).to.throw(error);
+            expect(getDelayedRunner({})).to.throw(error);
+            expect(getDelayedRunner([])).to.throw(error);
+        });
+
+        it('should return a function when invoked with correct parameters', function() {
+            var runner = _assertionHelper.getDelayedRunner(EMPTY_FUNC, 100);
+
+            expect(runner).to.be.a('function');
+        });
+
+        it('should return a promise when the runner function is invoked', function() {
+            var runner = _assertionHelper.getDelayedRunner(EMPTY_FUNC, 100);
+            var ret = runner();
+
+            expect(ret).to.be.a('object');
+            expect(ret).to.have.property('then').and.to.be.a('function');
+        });
+
+        it('should resolve the promise after a delay when the runner function is invoked with a non erroring task', function(done) {
+            var delay = 100;
+            var tolerance = 5;
+            var runner = _assertionHelper.getDelayedRunner(EMPTY_FUNC, delay);
+            var startTime = Date.now();
+            var ret = runner();
+
+            expect(ret).to.be.fulfilled.then(function() {
+                try{
+                    var endTime = Date.now();
+                    expect(endTime - startTime).to.be.within(delay - tolerance, delay + tolerance);
+                    done();
+                } catch (ex) {
+                    done(ex);
+                }
+            }, function(err) {
+                done(err);
+            });
+        });
+
+        it('should reject the promise after a delay when the runner function is invoked with a erroring task', function(done) {
+            var error = 'something went wrong';
+            var delay = 100;
+            var tolerance = 5;
+            var runner = _assertionHelper.getDelayedRunner(function() {
+                throw new Error(error);
+            }, delay);
+            var startTime = Date.now();
+            var ret = runner();
+
+            expect(ret).to.be.rejected.then(function() {
+                try{
+                    var endTime = Date.now();
+                    expect(endTime - startTime).to.be.within(delay - tolerance, delay + tolerance);
+                    done();
+                } catch (ex) {
+                    done(ex);
+                }
+            }, function(err) {
+                done(err);
+            });
+        });
+    });
+});

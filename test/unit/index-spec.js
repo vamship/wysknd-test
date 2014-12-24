@@ -14,5 +14,6 @@ describe('index: ', function() {
         expect(_index).to.have.property('fs').to.be.an('object');
         expect(_index).to.have.property('object').to.be.an('object');
         expect(_index).to.have.property('utils').to.be.an('object');
+        expect(_index).to.have.property('assertionHelper').to.be.an('object');
     });
 });
