@@ -21,6 +21,7 @@ describe('object', function() {
         expect(_assertionHelper).to.have.property('runDeferred').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getDelayedRunner').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getNotifyFailureHandler').and.to.be.a('function');
+        expect(_assertionHelper).to.have.property('getResolver').and.to.be.a('function');
     });
 
     describe('getNotifySuccessHandler()', function() {
@@ -221,7 +222,7 @@ describe('object', function() {
 
         it('should resolve the promise after a delay when the runner function is invoked with a non erroring task', function(done) {
             var delay = 100;
-            var tolerance = 5;
+            var tolerance = 7;
             var runner = _assertionHelper.getDelayedRunner(EMPTY_FUNC, delay);
             var startTime = Date.now();
             var ret = runner();
@@ -229,7 +230,7 @@ describe('object', function() {
             expect(ret).to.be.fulfilled.then(function() {
                 try{
                     var endTime = Date.now();
-                    expect(endTime - startTime).to.be.within(delay - tolerance, delay + tolerance);
+                    expect(endTime - startTime).to.be.within(delay, delay + tolerance);
                     done();
                 } catch (ex) {
                     done(ex);
@@ -242,7 +243,7 @@ describe('object', function() {
         it('should reject the promise after a delay when the runner function is invoked with a erroring task', function(done) {
             var error = 'something went wrong';
             var delay = 100;
-            var tolerance = 5;
+            var tolerance = 7;
             var runner = _assertionHelper.getDelayedRunner(function() {
                 throw new Error(error);
             }, delay);
@@ -252,7 +253,7 @@ describe('object', function() {
             expect(ret).to.be.rejected.then(function() {
                 try{
                     var endTime = Date.now();
-                    expect(endTime - startTime).to.be.within(delay - tolerance, delay + tolerance);
+                    expect(endTime - startTime).to.be.within(delay, delay + tolerance);
                     done();
                 } catch (ex) {
                     done(ex);
@@ -260,6 +261,77 @@ describe('object', function() {
             }, function(err) {
                 done(err);
             });
+        });
+    });
+
+    describe('getResolver()', function() {
+
+        function _getDeferred() {
+            return {
+                resolve: _sinon.spy(),
+                reject: _sinon.spy()
+            };
+        }
+
+        it('should throw an error if invoked without a valid deferred object', function() {
+            var error = 'invalid deferred object specified for resolver (arg #1)'; 
+            function invokeMethod(def) {
+                return function() {
+                   _assertionHelper.getResolver(def); 
+                };
+            };
+
+            expect(invokeMethod()).to.throw(error);
+            expect(invokeMethod('string')).to.throw(error);
+            expect(invokeMethod(123)).to.throw(error);
+            expect(invokeMethod(true)).to.throw(error);
+            expect(invokeMethod({})).to.throw(error);
+            expect(invokeMethod([])).to.throw(error);
+        });
+
+        it('should return a function when invoked with a valid deferred object', function() {
+            var def = _getDeferred();
+            var callback = _assertionHelper.getResolver(def);
+
+            expect(callback).to.be.a('function');
+        });
+
+        it('should resolve the deferred with correct arguments if the callback is invoked without an error', function() {
+            var def = _getDeferred();
+            var arg1 = 'data1';
+            var arg2 = 'data2';
+            var callback = _assertionHelper.getResolver(def);
+
+            expect(def.resolve).to.not.have.been.called;
+            expect(def.reject).to.not.have.been.called;
+
+            callback(null);
+            expect(def.resolve).to.have.been.calledWithExactly();
+            expect(def.reject).to.not.have.been.called;
+            def.resolve.reset();
+
+            callback(null, arg1);
+            expect(def.resolve).to.have.been.calledWithExactly(arg1);
+            expect(def.reject).to.not.have.been.called;
+            def.resolve.reset();
+
+            callback(null, arg1, arg2);
+            expect(def.resolve).to.have.been.calledWithExactly(arg1, arg2);
+            expect(def.reject).to.not.have.been.called;
+            def.resolve.reset();
+        });
+
+        it('should reject the deferred with the error if the callback is invoked with an error', function() {
+            var def = _getDeferred();
+            var error = 'something went wrong';
+            var callback = _assertionHelper.getResolver(def);
+
+            expect(def.resolve).to.not.have.been.called;
+            expect(def.reject).to.not.have.been.called;
+
+            callback(error);
+            expect(def.resolve).to.not.have.been.called;
+            expect(def.reject).to.have.been.calledWithExactly(error);
         });
     });
 });
