@@ -321,6 +321,32 @@ describe('object', function() {
             def.resolve.reset();
         });
 
+        it('should resolve the deferred with the specified arguments when the resolveArgs parameter is specified', function() {
+            var def = _getDeferred();
+            var arg1 = 'data1';
+            var arg2 = 'data2';
+            var resolveArgs = 'foo';
+            var callback = _assertionHelper.getResolver(def, resolveArgs);
+
+            expect(def.resolve).to.not.have.been.called;
+            expect(def.reject).to.not.have.been.called;
+
+            callback(null);
+            expect(def.resolve).to.have.been.calledWithExactly(resolveArgs);
+            expect(def.reject).to.not.have.been.called;
+            def.resolve.reset();
+
+            callback(null, arg1);
+            expect(def.resolve).to.have.been.calledWithExactly(resolveArgs);
+            expect(def.reject).to.not.have.been.called;
+            def.resolve.reset();
+
+            callback(null, arg1, arg2);
+            expect(def.resolve).to.have.been.calledWithExactly(resolveArgs);
+            expect(def.reject).to.not.have.been.called;
+            def.resolve.reset();
+        });
+
         it('should reject the deferred with the error if the callback is invoked with an error', function() {
             var def = _getDeferred();
             var error = 'something went wrong';
