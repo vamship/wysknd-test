@@ -15,7 +15,7 @@ describe('index: ', function() {
         expect(_index).to.have.property('object').to.be.an('object');
         expect(_index).to.have.property('utils').to.be.an('object');
         expect(_index).to.have.property('assertionHelper').to.be.an('object');
-        expect(_index).to.have.property('LambdaWrapper').to.be.a('function');
+        expect(_index).to.have.property('AwsLambdaWrapper').to.be.a('function');
         expect(_index).to.have.property('testValueProvider').to.be.an('object');
     });
 });
