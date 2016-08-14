@@ -1,5 +1,5 @@
-/* jshint node:true, expr:true */
 'use strict';
+/* jshint node:true, expr:true */
 
 var _fs = require('fs');
 var _chai = require('chai');
@@ -17,5 +17,6 @@ describe('index: ', function() {
         expect(_index).to.have.property('assertionHelper').to.be.an('object');
         expect(_index).to.have.property('AwsLambdaWrapper').to.be.a('function');
         expect(_index).to.have.property('testValueProvider').to.be.an('object');
+        expect(_index).to.have.property('consoleHelper').to.be.an('object');
     });
 });
