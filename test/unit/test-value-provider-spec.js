@@ -130,6 +130,48 @@ describe('testValueProvider', () => {
         });
     });
 
+    describe('allButUndefined()', () => {
+
+        it('should return an array with expected values when invoked', () => {
+            const values = _testValueProvider.allButUndefined();
+            const expectedValues = _getExpectedValues();
+
+            expectedValues.primitives.splice(0, 1);
+            _checkResults(values, expectedValues);
+        });
+
+        it('should append the specified arguments to the return array', () => {
+            const appendedValues = ['foo', -1, '', false];
+            const values = _testValueProvider.allButUndefined.apply(_testValueProvider, appendedValues);
+            const expectedValues = _getExpectedValues();
+
+            expectedValues.primitives.splice(0, 1);
+            expectedValues.extra = appendedValues;
+            _checkResults(values, expectedValues);
+        });
+    });
+
+    describe('allButNull()', () => {
+
+        it('should return an array with expected values when invoked', () => {
+            const values = _testValueProvider.allButNull();
+            const expectedValues = _getExpectedValues();
+
+            expectedValues.primitives.splice(1, 1);
+            _checkResults(values, expectedValues);
+        });
+
+        it('should append the specified arguments to the return array', () => {
+            const appendedValues = ['foo', -1, '', false];
+            const values = _testValueProvider.allButNull.apply(_testValueProvider, appendedValues);
+            const expectedValues = _getExpectedValues();
+
+            expectedValues.primitives.splice(1, 1);
+            expectedValues.extra = appendedValues;
+            _checkResults(values, expectedValues);
+        });
+    });
+
     describe('allButNumber()', () => {
 
         it('should return an array with expected values when invoked', () => {
