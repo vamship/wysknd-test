@@ -13,6 +13,6 @@ describe('[aws.index]', function() {
     it('should expose methods required by the interface', function() {
         expect(_index).to.have.property('LambdaWrapper').to.be.a('function');
         expect(_index).to.have.property('LambdaContext').to.be.a('function');
+        expect(_index).to.have.property('DynamoDbHelper').to.be.a('function');
     });
 });
-
