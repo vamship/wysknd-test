@@ -7,9 +7,9 @@ _chai.use(require('sinon-chai'));
 _chai.use(require('chai-as-promised'));
 const expect = _chai.expect;
 
-const AwsLambdaContext = require('../../lib/aws-lambda-context');
+const LambdaContext = require('../../../lib/aws/lambda-context');
 
-describe('AwsLambdaContext', () => {
+describe('LambdaContext', () => {
     const DEFAULT_FUNCTION_NAME = '__function_name__';
     const DEFAULT_ARN_PREFIX = 'arn:aws:lambda:__aws_region__:__aws_account__:function'
     const DEFAULT_FUNCTION_VERSION = '$LATEST';
@@ -25,7 +25,7 @@ describe('AwsLambdaContext', () => {
 
     describe('ctor()', () => {
       it('should expose the expected methods and properties', () => {
-          const context = new AwsLambdaContext();
+          const context = new LambdaContext();
 
           expect(context).to.be.an('object');
           expect(context.env).to.be.a('string');
@@ -33,7 +33,7 @@ describe('AwsLambdaContext', () => {
       });
 
       it('should set default values for all properties', () => {
-          const context = new AwsLambdaContext();
+          const context = new LambdaContext();
 
           expect(context.env).to.equal('na');
           expect(context.context).to.deep.equal({
@@ -45,7 +45,7 @@ describe('AwsLambdaContext', () => {
 
       it('should add a lambda qualifier (but not the alias property) if an alias is specified', () => {
           const alias = 'dev';
-          const context = new AwsLambdaContext({
+          const context = new LambdaContext({
               alias: alias
           });
 
@@ -58,7 +58,7 @@ describe('AwsLambdaContext', () => {
 
       it('should set the env property of the context to equal the alias value if a valid value is specified', () => {
           const alias = 'dev';
-          const context = new AwsLambdaContext({
+          const context = new LambdaContext({
               alias: alias
           });
 
