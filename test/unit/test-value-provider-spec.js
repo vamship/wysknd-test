@@ -46,6 +46,7 @@ describe('testValueProvider', () => {
         expect(_testValueProvider.allButObject).to.be.a('function');
         expect(_testValueProvider.allButArray).to.be.a('function');
         expect(_testValueProvider.allButFunction).to.be.a('function');
+        expect(_testValueProvider.allButBoolean).to.be.a('function');
     });
 
     describe('allButSelected()', () => {
@@ -272,6 +273,27 @@ describe('testValueProvider', () => {
             const expectedValues = _getExpectedValues();
 
             expectedValues.complex.splice(2, 1);
+            expectedValues.extra = appendedValues;
+            _checkResults(values, expectedValues);
+        });
+    });
+
+    describe('allButBoolean()', () => {
+
+        it('should return an array with expected values when invoked', () => {
+            const values = _testValueProvider.allButBoolean();
+            const expectedValues = _getExpectedValues();
+
+            expectedValues.primitives.splice(4, 1);
+            _checkResults(values, expectedValues);
+        });
+
+        it('should append the specified arguments to the return array', () => {
+            const appendedValues = ['foo', -1, '', false];
+            const values = _testValueProvider.allButBoolean.apply(_testValueProvider, appendedValues);
+            const expectedValues = _getExpectedValues();
+
+            expectedValues.primitives.splice(4, 1);
             expectedValues.extra = appendedValues;
             _checkResults(values, expectedValues);
         });
