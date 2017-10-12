@@ -1,6 +1,6 @@
 {
   "name": "wysknd-test",
-  "version": "3.9.6",
+  "version": "3.9.7",
   "description": "Utilities that provide functionality that can be used to test othe modules.",
   "main": "lib/index.js",
   "directories": {
