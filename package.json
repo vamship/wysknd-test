@@ -24,15 +24,15 @@
   },
   "homepage": "https://github.com/vamship/wysknd-test",
   "devDependencies": {
-    "chai": "^1.9.2",
-    "chai-as-promised": "^4.1.1",
-    "mocha": "^2.0.1",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^4.0.1",
     "sinon-chai": "^2.6.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.7.15",
-    "clone": "^1.0.2",
-    "q": "^1.1.2",
+    "aws-sdk": "^2.175.0",
+    "clone": "^2.1.1",
+    "q": "^1.5.1",
     "sinon": "^4.1.3"
   }
 }

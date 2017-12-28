@@ -309,7 +309,7 @@ describe('LambdaWrapper', () => {
             const wrapper = new LambdaWrapper(_handler);
             const ret = wrapper.invoke();
 
-            expect(ret).to.be.an('object');
+            expect(ret).to.be.an.instanceof(Promise);
             expect(ret.then).to.be.a('function');
         });
 
