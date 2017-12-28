@@ -3,7 +3,6 @@
 
 var _sinon = require('sinon');
 var _chai = require('chai');
-var _q = require('q');
 _chai.use(require('sinon-chai'));
 _chai.use(require('chai-as-promised'));
 
@@ -18,7 +17,6 @@ describe('object', function() {
     it('should expose methods required by the interface', function() {
         expect(_assertionHelper).to.have.property('getNotifySuccessHandler').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getNotifyFailureHandler').and.to.be.a('function');
-        expect(_assertionHelper).to.have.property('runDeferred').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getDelayedRunner').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getNotifyFailureHandler').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getResolver').and.to.be.a('function');
@@ -96,74 +94,6 @@ describe('object', function() {
             expect(spy).not.to.have.been.called;
             callback(errorMessage);
             expect(spy).to.have.been.calledOnce.calledWithExactly(errorMessage);
-        });
-    });
-
-    describe('runDeferred()', function() {
-        it('should throw an error if invoked with an invalid expectation wrapper', function() {
-            var error = 'invalid expectation wrapper specified (arg #1)';
-            
-            function runDeferred(expectations) {
-                return function() {
-                    return _assertionHelper.runDeferred(expectations);
-                }
-            }
-
-            expect(runDeferred()).to.throw(error);
-            expect(runDeferred(null)).to.throw(error);
-            expect(runDeferred('')).to.throw(error);
-            expect(runDeferred('foo')).to.throw(error);
-            expect(runDeferred(123)).to.throw(error);
-            expect(runDeferred(true)).to.throw(error);
-            expect(runDeferred({})).to.throw(error);
-            expect(runDeferred([])).to.throw(error);
-        });
-
-        it('should create a new deferred object if one has not been provided', function() {
-            var ret = _assertionHelper.runDeferred(EMPTY_FUNC);
-
-            expect(ret).to.be.an('object');
-            expect(ret).to.have.property('promise').and.to.be.an('object');
-            expect(ret).to.have.property('resolve').and.to.be.a('function');
-            expect(ret).to.have.property('reject').and.to.be.a('function');
-        });
-
-        it('should reuse an existing deferred object if one is passed in', function() {
-            var def = _q.defer();
-            var ret = _assertionHelper.runDeferred(EMPTY_FUNC, def);
-
-            expect(ret).to.equal(def);
-        });
-
-        it('should reject the promise if the expectations throw an error', function(done) {
-            var error = 'something went wrong';
-            var ret = _assertionHelper.runDeferred(function() { throw new Error(error); });
-
-            expect(ret.promise).to.be.rejectedWith(error).notify(done);
-        });
-        
-        it('should resolve the promise if the expectations execute successfully', function(done) {
-            var ret = _assertionHelper.runDeferred(EMPTY_FUNC);
-            expect(ret.promise).to.be.fulfilled.notify(done);
-        });
-        
-        it('should reject the promise if the expectations return a promise that is rejected', function(done) {
-            var error = 'something went wrong';
-            var ret = _assertionHelper.runDeferred(function() {
-                var def = _q.defer();
-                def.reject(new Error(error));
-                return def.promise;
-            });
-            expect(ret.promise).to.be.rejectedWith(error).notify(done);
-        });
-
-        it('should resolve the promise if the expectations return a promise that is resolved', function(done) {
-            var ret = _assertionHelper.runDeferred(function() {
-                var def = _q.defer();
-                def.resolve();
-                return def.promise;
-            });
-            expect(ret.promise).to.be.fulfilled.notify(done);
         });
     });
 
