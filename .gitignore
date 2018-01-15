@@ -39,3 +39,4 @@ node_modules
 
 # Test coverage directory
 .nyc_output
+.coverage

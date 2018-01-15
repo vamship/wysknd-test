@@ -6,9 +6,12 @@
   "directories": {
     "test": "test"
   },
+  "nyc": {
+    "report-dir": ".coverage"
+  },
   "scripts": {
-    "test": "nyc mocha -R spec --recursive test/unit",
-    "clean": "rm -rf .nyc_output"
+    "test": "nyc mocha -R spec --recursive test/unit && nyc report --reporter=html",
+    "clean": "rm -rf .nyc_output .coverage"
   },
   "repository": {
     "type": "git",
