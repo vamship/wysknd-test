@@ -18,7 +18,6 @@ describe('object', function() {
         expect(_assertionHelper).to.have.property('getNotifySuccessHandler').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getNotifyFailureHandler').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getDelayedRunner').and.to.be.a('function');
-        expect(_assertionHelper).to.have.property('getNotifyFailureHandler').and.to.be.a('function');
         expect(_assertionHelper).to.have.property('getResolver').and.to.be.a('function');
     });
 
@@ -152,7 +151,7 @@ describe('object', function() {
 
         it('should resolve the promise after a delay when the runner function is invoked with a non erroring task', function(done) {
             var delay = 100;
-            var tolerance = 7;
+            var tolerance = 10;
             var runner = _assertionHelper.getDelayedRunner(EMPTY_FUNC, delay);
             var startTime = Date.now();
             var ret = runner();
